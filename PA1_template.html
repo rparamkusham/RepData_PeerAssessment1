@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<title>convert date to date data type</title>
+
+<script type="text/javascript">
+window.onload = function() {
+  var imgs = document.getElementsByTagName('img'), i, img;
+  for (i = 0; i < imgs.length; i++) {
+    img = imgs[i];
+    // center an image if it is the only element of its parent
+    if (img.parentElement.childElementCount === 1)
+      img.parentElement.style.textAlign = 'center';
+  }
+};
+</script>
+
+
+
+
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 13px;
+}
+
+body {
+  max-width: 800px;
+  margin: auto;
+  padding: 1em;
+  line-height: 20px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 {
+   font-size:2.2em;
+}
+
+h2 {
+   font-size:1.8em;
+}
+
+h3 {
+   font-size:1.4em;
+}
+
+h4 {
+   font-size:1.0em;
+}
+
+h5 {
+   font-size:0.9em;
+}
+
+h6 {
+   font-size:0.8em;
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre, img {
+  max-width: 100%;
+}
+pre {
+  overflow-x: auto;
+}
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code {
+  font-size: 92%;
+  border: 1px solid #ccc;
+}
+
+code[class] {
+  background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * {
+      background: transparent !important;
+      color: black !important;
+      filter:none !important;
+      -ms-filter: none !important;
+   }
+
+   body {
+      font-size:12pt;
+      max-width:100%;
+   }
+
+   a, a:visited {
+      text-decoration: underline;
+   }
+
+   hr {
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote {
+      padding-right: 1em;
+      page-break-inside: avoid;
+   }
+
+   tr, img {
+      page-break-inside: avoid;
+   }
+
+   img {
+      max-width: 100% !important;
+   }
+
+   @page :left {
+      margin: 15mm 20mm 15mm 10mm;
+   }
+
+   @page :right {
+      margin: 15mm 10mm 15mm 20mm;
+   }
+
+   p, h2, h3 {
+      orphans: 3; widows: 3;
+   }
+
+   h2, h3 {
+      page-break-after: avoid;
+   }
+}
+</style>
+
+
+
+</head>
+
+<body>
+<p>Loading and preprocessing</p>
+
+<p>Load input data from a zip file from the current R working directory.</p>
+
+<p>data &lt;- read.table(unz(&ldquo;activity.zip&rdquo;, &ldquo;activity.csv&rdquo;), header=T, quote=&ldquo;\&rdquo;&ldquo;, sep=&rdquo;,&ldquo;)</p>
+
+<h1>convert date to date data type</h1>
+
+<p>data$date &lt;- as.Date(data$date) 
+What is mean total number of steps taken per day?</p>
+
+<p>Create a new dataset ignoring missing data NA
+Plot a histogram of the total number of steps taken each day
+Report the mean and median total number of steps taken per day
+data.ignore.na &lt;- na.omit(data) </p>
+
+<h1>sum steps by date</h1>
+
+<p>daily.steps &lt;- rowsum(data.ignore.na$steps, format(data.ignore.na$date, &#39;%Y-%m-%d&#39;)) 
+daily.steps &lt;- data.frame(daily.steps) 
+names(daily.steps) &lt;- (&quot;steps&rdquo;) 
+Plot histogram of the total number of steps taken each day:</p>
+
+<p>hist(daily.steps$steps, 
+     main=&ldquo; &rdquo;,
+     breaks=10,
+     xlab=&ldquo;Total Number of Steps Taken Daily&rdquo;)</p>
+
+<p>Report mean and median of steps:</p>
+
+<p>mean(daily.steps$steps)</p>
+
+<h2>[1] 10766</h2>
+
+<p>median(daily.steps$steps) </p>
+
+<h2>[1] 10765</h2>
+
+<p>What is the average daily activity pattern?</p>
+
+<p>Calculate average steps for each of 5-minute interval during a 24-hour period.
+Make a time series plot (i.e. type = “l”) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+Report which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+Observer and comment the average daily activity pattern
+library(plyr)</p>
+
+<h1>Calculate average steps for each of 5-minute interval during a 24-hour period</h1>
+
+<p>interval.mean.steps &lt;- ddply(data.ignore.na,~interval, summarise, mean=mean(steps))
+Plot time series of the 5-minute interval and the average number of steps taken, averaged across all days</p>
+
+<p>library(ggplot2)
+qplot(x=interval, y=mean, data = interval.mean.steps,  geom = &ldquo;line&rdquo;,
+      xlab=&ldquo;5-Minute Interval (military time)&rdquo;,
+      ylab=&ldquo;Number of Step Count&rdquo;,
+      main=&ldquo;Average Number of Steps Taken Averaged Across All Days&rdquo;
+      )</p>
+
+<p>Report the 5-min interval, on average across all the days in the dataset, contains the maximum number of steps:
+interval.mean.steps[which.max(interval.mean.steps$mean), ]</p>
+
+<h2>interval  mean</h2>
+
+<h2>104      835 206.2</h2>
+
+<p>Imputing missing values</p>
+
+<p>Note that there are a number of days/intervals where there are missing values (coded as NA). The presence of missing days may introduce bias into some calculations or summaries of the data. In this section:</p>
+
+<p>Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+Implement a strategy for filling in all of the missing values in the dataset. For this assignment the strategy is to use the mean for that 5-minute interval to replace missing valuse. Create a new dataset that is equal to the original dataset but with the missing data filled in.
+Make a histogram of the total number of steps taken each day
+Calculate and report the mean and median total number of steps taken per day.
+Make following comments: Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)</p>
+
+<p>library(sqldf)</p>
+
+<h2>Loading required package: gsubfn</h2>
+
+<h2>Loading required package: proto</h2>
+
+<h2>Loading required namespace: tcltk</h2>
+
+<h2>Loading required package: RSQLite</h2>
+
+<h2>Loading required package: DBI</h2>
+
+<h2>Loading required package: RSQLite.extfuns</h2>
+
+<p>tNA &lt;- sqldf(&#39; 
+    SELECT d.*<br/>
+    FROM &ldquo;data&rdquo; as d
+    WHERE d.steps IS NULL 
+    ORDER BY d.date, d.interval &#39;) </p>
+
+<h2>Loading required package: tcltk</h2>
+
+<p>NROW(tNA) </p>
+
+<h2>[1] 2304</h2>
+
+<p>Implement a strategy for filling in all of the missing values in the dataset. For this assignment the strategy is to use the mean for that 5-minute interval to replace missing valuse. Create a new dataset (t1) that is equal to the original dataset but with the missing data filled in. The dataset is ordered by date and interval. The following SQL statement combines the original “data” dataset set and the “interval.mean.steps” dataset that contains mean values of each 5-min interval ageraged across all days.</p>
+
+<p>t1 &lt;- sqldf(&#39;<br/>
+    SELECT d.*, i.mean
+    FROM &ldquo;interval.mean.steps&rdquo; as i
+    JOIN &ldquo;data&rdquo; as d
+    ON d.interval = i.interval 
+    ORDER BY d.date, d.interval &#39;) </p>
+
+<p>t1$steps[is.na(t1$steps)] &lt;- t1$mean[is.na(t1$steps)]
+In the following, prepare data for plot histogram calculate mean and median:</p>
+
+<p>t1.total.steps &lt;- as.integer( sqldf(&#39; 
+    SELECT sum(steps)<br/>
+    FROM t1&#39;) );</p>
+
+<p>t1.total.steps.by.date &lt;- sqldf(&#39; 
+    SELECT date, sum(steps) as &ldquo;t1.total.steps.by.date&rdquo; 
+    FROM t1 GROUP BY date 
+    ORDER BY date&#39;) </p>
+
+<p>daily.61.steps &lt;- sqldf(&#39;<br/>
+    SELECT date, t1_total_steps_by_date as &ldquo;steps&rdquo;
+    FROM &ldquo;t1.total.steps.by.date&rdquo;
+    ORDER BY date&#39;) 
+Make a histogram of the total number of steps taken each day.</p>
+
+<p>hist(daily.61.steps$steps, 
+     main=&ldquo; &rdquo;,
+     breaks=10,
+     xlab=&ldquo;After Imputate NA -Total Number of Steps Taken Daily&rdquo;)</p>
+
+<p>Calculate and report the mean and median total number of steps taken per day.</p>
+
+<p>t1.mean.steps.per.day &lt;- as.integer(t1.total.steps / NROW(t1.total.steps.by.date) )
+t1.mean.steps.per.day</p>
+
+<h2>[1] 10766</h2>
+
+<p>t1.median.steps.per.day &lt;- median(t1.total.steps.by.date$t1.total.steps.by.date)
+t1.median.steps.per.day</p>
+
+<h2>[1] 10766</h2>
+
+<p>Do these values (mean and median) differ from the estimates from the first part of the assignment? Not Really.</p>
+
+<p>What is the impact of imputing missing data on the estimates of the total daily number of steps? The shape of the histogram remains the same as the histogram from removed missing values. However, the frequency counts increased as expected. In this case, it seems that the data imputation strategy should work for the downstream data analysis and modeling.</p>
+
+<p>Are there differences in activity patterns between weekdays and weekends?</p>
+
+<p>Use the dataset with the filled-in missing values for this part. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+Make a panel plot containing a time series plot (i.e. type = “l”) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
+Create a factor variable weektime with two levels (weekday, weekend). The folowing dataset t5 dataset contains data: average number of steps taken averaged across all weekday days and weekend days, 5-min intervals, and a facter variable weektime with two levels (weekday, weekend).</p>
+
+<p>t1$weektime &lt;- as.factor(ifelse(weekdays(t1$date) %in% 
+                c(&ldquo;Saturday&rdquo;,&ldquo;Sunday&rdquo;),&ldquo;weekend&rdquo;, &ldquo;weekday&rdquo;))</p>
+
+<p>t5 &lt;- sqldf(&#39;<br/>
+    SELECT interval, avg(steps) as &ldquo;mean.steps&rdquo;, weektime
+    FROM t1
+    GROUP BY weektime, interval
+    ORDER BY interval &#39;)
+Make a panel plot containing a time series plot (i.e. type = “l”) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).</p>
+
+<p>library(&ldquo;lattice&rdquo;)
+p &lt;- xyplot(mean.steps ~ interval | factor(weektime), data=t5, 
+       type = &#39;l&#39;,
+       main=&ldquo;Average Number of Steps Taken 
+       \nAveraged Across All Weekday Days or Weekend Days&rdquo;,
+       xlab=&ldquo;5-Minute Interval (military time)&rdquo;,
+       ylab=&ldquo;Average Number of Steps Taken&rdquo;)
+print (p)    </p>
+
+<p>Are there differences in activity patterns between weekdays and weekends? Yes. 
+The plot indicates that the person moves around more (or more active) during the weekend days.</p>
+
+</body>
+
+</html>
